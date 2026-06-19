@@ -59,3 +59,17 @@ async def test_update_status_changes_status(db_session):
     job = await repo.create(title="Dev", company="X", description="desc")
     updated = await repo.update_status(job.id, "Aplicado")
     assert updated.status == "Aplicado"
+
+
+async def test_update_adapted_resume_raises_on_missing_id(db_session):
+    import uuid
+    repo = JobRepository(db_session)
+    with pytest.raises(ValueError, match="not found"):
+        await repo.update_adapted_resume(uuid.uuid4(), "content")
+
+
+async def test_update_status_raises_on_missing_id(db_session):
+    import uuid
+    repo = JobRepository(db_session)
+    with pytest.raises(ValueError, match="not found"):
+        await repo.update_status(uuid.uuid4(), "Aplicado")

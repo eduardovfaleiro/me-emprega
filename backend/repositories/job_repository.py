@@ -32,6 +32,8 @@ class JobRepository:
 
     async def update_adapted_resume(self, job_id: uuid.UUID, content: str) -> Job:
         job = await self.session.get(Job, job_id)
+        if job is None:
+            raise ValueError(f"Job {job_id} not found")
         job.adapted_resume = content
         await self.session.commit()
         await self.session.refresh(job)
@@ -39,6 +41,8 @@ class JobRepository:
 
     async def update_status(self, job_id: uuid.UUID, status: str) -> Job:
         job = await self.session.get(Job, job_id)
+        if job is None:
+            raise ValueError(f"Job {job_id} not found")
         job.status = status
         await self.session.commit()
         await self.session.refresh(job)

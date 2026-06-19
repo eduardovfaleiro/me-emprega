@@ -17,7 +17,7 @@ class Job(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     status: Mapped[str] = mapped_column(
-        String(50), nullable=False, default="Aplicando"
+        String(50), nullable=False, default="Aplicando", server_default="Aplicando"
     )
     adapted_resume: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

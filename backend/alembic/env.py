@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 from logging.config import fileConfig
 from sqlalchemy import pool
-from sqlalchemy.engine import Engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from alembic import context
 from dotenv import load_dotenv
@@ -56,8 +55,9 @@ async def run_migrations_online() -> None:
         poolclass=pool.NullPool,
     )
 
-    async with connectable.begin() as connection:
+    async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
+    await connectable.dispose()
 
 
 if context.is_offline_mode():

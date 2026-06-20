@@ -1,3 +1,5 @@
+"use client";
+
 import { useDroppable } from "@dnd-kit/core";
 import { Job, JobStatus } from "@/lib/api";
 import { JobCard } from "./job-card";

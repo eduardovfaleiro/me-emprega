@@ -5,6 +5,14 @@ import { CSS } from "@dnd-kit/utilities";
 import { Job } from "@/lib/api";
 import { formatDate, getInitials, getAvatarColor } from "@/lib/utils";
 
+const STATUS_LABELS: Record<string, string> = {
+  salva: "Salva",
+  aplicada: "Aplicada",
+  em_processo: "Em processo",
+  oferta: "Oferta",
+  arquivada: "Arquivada",
+};
+
 function CalendarIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,9 +66,14 @@ export function JobCard({ job, onSelect }: JobCardProps) {
           <div className="text-[12.5px] text-slate-500 truncate">{job.company}</div>
         </div>
       </div>
-      <div className="flex items-center gap-[5px] text-[11.5px] text-slate-400">
-        <CalendarIcon />
-        {formatDate(job.created_at)}
+      <div className="flex items-center justify-between gap-[8px]">
+        <div className="flex items-center gap-[5px] text-[11.5px] text-slate-400">
+          <CalendarIcon />
+          {formatDate(job.created_at)}
+        </div>
+        <span className="text-[11px] font-medium text-slate-500 bg-slate-100 rounded-[5px] px-[7px] py-[3px] flex-none">
+          {STATUS_LABELS[job.status] ?? job.status}
+        </span>
       </div>
     </div>
   );

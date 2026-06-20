@@ -10,7 +10,7 @@ async def test_create_job_persists_with_defaults(db_session):
     assert job.id is not None
     assert job.title == "Desenvolvedor Python"
     assert job.company == "ACME"
-    assert job.status == "Aplicando"
+    assert job.status == "salva"
     assert job.adapted_resume is None
     assert job.created_at is not None
 

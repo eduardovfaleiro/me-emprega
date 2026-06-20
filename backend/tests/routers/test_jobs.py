@@ -11,13 +11,17 @@ from backend.database import get_db
 def _mock_job(
     title: str = "Dev Python",
     company: str = "ACME",
-    status: str = "Aplicando",
+    status: str = "salva",
     adapted_resume: str | None = "# Adapted",
+    description: str = "Descrição da vaga",
+    url: str | None = None,
 ) -> MagicMock:
     job = MagicMock()
     job.id = uuid.uuid4()
     job.title = title
     job.company = company
+    job.description = description
+    job.url = url
     job.status = status
     job.created_at = datetime.now(timezone.utc)
     job.adapted_resume = adapted_resume
@@ -53,7 +57,7 @@ async def test_post_jobs_returns_201(override_db, mocker):
     assert response.status_code == 201
     data = response.json()
     assert "id" in data
-    assert data["status"] == "Aplicando"
+    assert data["status"] == "salva"
 
 
 async def test_get_jobs_returns_list(override_db, mocker):

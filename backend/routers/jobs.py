@@ -8,7 +8,7 @@ from backend.repositories.job_repository import JobRepository
 from backend.repositories.resume_repository import ResumeRepository
 from backend.services.resume_service import ResumeService, ResumeAdaptationError
 from backend.services.pdf_service import PDFService
-from backend.schemas.job import JobCreate, JobResponse
+from backend.schemas.job import JobCreate, JobResponse, PatchJobStatus
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -30,7 +30,7 @@ async def create_job(payload: JobCreate, db: AsyncSession = Depends(get_db)):
     try:
         await resume_service.adapt_resume_for_job(job.id)
     except ResumeAdaptationError:
-        pass  # job is saved; adaptation failure is non-blocking in MVP
+        pass
 
     await db.refresh(job)
     return job
@@ -39,6 +39,16 @@ async def create_job(payload: JobCreate, db: AsyncSession = Depends(get_db)):
 @router.get("", response_model=list[JobResponse])
 async def list_jobs(db: AsyncSession = Depends(get_db)):
     return await JobRepository(db).list_all()
+
+
+@router.patch("/{job_id}/status", response_model=JobResponse)
+async def update_job_status(
+    job_id: uuid.UUID, payload: PatchJobStatus, db: AsyncSession = Depends(get_db)
+):
+    try:
+        return await JobRepository(db).update_status(job_id, payload.status)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Job not found")
 
 
 @router.get("/{job_id}/resume/download")

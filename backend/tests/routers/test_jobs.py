@@ -107,3 +107,48 @@ async def test_download_resume_returns_404_when_no_resume(override_db, mocker):
         response = await client.get(f"/jobs/{job.id}/resume/download")
 
     assert response.status_code == 404
+
+
+async def test_patch_job_status_returns_200(override_db, mocker):
+    updated_job = _mock_job(status="aplicada")
+    mocker.patch(
+        "backend.routers.jobs.JobRepository"
+    ).return_value.update_status = AsyncMock(return_value=updated_job)
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.patch(
+            f"/jobs/{updated_job.id}/status", json={"status": "aplicada"}
+        )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "aplicada"
+
+
+async def test_patch_job_status_returns_404_when_not_found(override_db, mocker):
+    mocker.patch(
+        "backend.routers.jobs.JobRepository"
+    ).return_value.update_status = AsyncMock(side_effect=ValueError("not found"))
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.patch(
+            f"/jobs/{uuid.uuid4()}/status", json={"status": "aplicada"}
+        )
+
+    assert response.status_code == 404
+
+
+async def test_patch_job_status_returns_422_for_invalid_status(override_db, mocker):
+    mocker.patch("backend.routers.jobs.JobRepository")
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.patch(
+            f"/jobs/{uuid.uuid4()}/status", json={"status": "invalido"}
+        )
+
+    assert response.status_code == 422

@@ -4,6 +4,7 @@ import { PopupHeader } from "./PopupHeader";
 function getInitials(company: string): string {
   return (company || "?")
     .split(/\s+/)
+    .filter(Boolean)
     .map((w) => w[0])
     .join("")
     .slice(0, 2)

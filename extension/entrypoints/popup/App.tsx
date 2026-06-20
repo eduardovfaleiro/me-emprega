@@ -19,12 +19,13 @@ export default function App() {
   useEffect(() => {
     extractJobFromCurrentTab()
       .then((jobData) => setState({ type: "detected", jobData }))
-      .catch((e) =>
+      .catch((e) => {
+        console.warn("Job extraction failed:", e);
         setState({
           type: "detected",
           jobData: { title: "", company: "", description: "" },
-        })
-      );
+        });
+      });
   }, []);
 
   async function handleSubmit(jobData: JobData) {
@@ -78,7 +79,17 @@ export default function App() {
     <div className="w-[380px] bg-white p-4 flex flex-col gap-3 font-geist">
       <p className="text-[13px] text-red-500">{state.message}</p>
       <button
-        onClick={() => setState({ type: "extracting" })}
+        onClick={() => {
+          setState({ type: "extracting" });
+          extractJobFromCurrentTab()
+            .then((jobData) => setState({ type: "detected", jobData }))
+            .catch(() =>
+              setState({
+                type: "detected",
+                jobData: { title: "", company: "", description: "" },
+              })
+            );
+        }}
         className="text-[12px] text-slate-500 hover:text-slate-700 underline"
       >
         Tentar novamente

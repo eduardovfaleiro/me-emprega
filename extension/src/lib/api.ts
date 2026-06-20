@@ -17,9 +17,9 @@ export async function createJob(data: JobData): Promise<JobResponse> {
 
 export function downloadResume(jobId: string, company: string): void {
   const filename = `Curriculo_${company.replace(/\s+/g, "_")}.pdf`;
-  const link = document.createElement("a");
-  link.href = `${API_BASE}/jobs/${jobId}/resume/download`;
-  link.download = filename;
-  link.target = "_blank";
-  link.click();
+  chrome.downloads.download({
+    url: `${API_BASE}/jobs/${jobId}/resume/download`,
+    filename,
+    saveAs: false,
+  });
 }

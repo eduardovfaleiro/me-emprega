@@ -5,7 +5,7 @@ export default defineConfig({
   manifest: {
     name: "me emprega",
     description: "Automatize suas candidaturas de emprego",
-    permissions: ["activeTab", "scripting"],
+    permissions: ["activeTab", "scripting", "downloads"],
     host_permissions: ["<all_urls>"],
     action: {
       default_title: "me emprega",
